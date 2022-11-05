@@ -14,7 +14,7 @@
 
 % Used to create a section slide between section
 \AtBeginSection[]{
-  \begin{frame}
+  \begin{frame}[noframenumbering, plain]
   \vfill
   \centering
   \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
@@ -23,6 +23,20 @@
   \vfill
   \end{frame}
 }
+
+% Used to create a subsection slide between subsections
+% \AtBeginSubsubsection{\frame{\subsubsectionpage}}
+\AtBeginSubsection[]{
+  \begin{frame}[noframenumbering, plain]
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead:\par\phantom{space please}\par\insertsubsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
 
 % Remove default navigation symbols and add just  page number
 \setbeamertemplate{navigation symbols}{} % Clear default navigation
@@ -45,10 +59,12 @@
 \newcommand{\smallurl}[1]{\textcolor{blue}{\fontsize{4pt}{4.8pt}\selectfont \url{#1}}}
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Title page
-\title{SAMuEL-2: Stroke Audit with Machine Learning 2\\Investigating variation in clinical decision-making with explainable AI}
+\title{SAMuEL-2: Stroke Audit with Machine Learning 2\\\phantom{blank line please}\\Investigating variation in clinical decision-making with explainable AI}
 % \subtitle{}
 \author[Anna Laws]{Anna Laws, Kerry Pearn, and Michael Allen}
 \institute{University of Exeter Medical School, PenCHORD}
@@ -56,7 +72,7 @@
 
 \begin{document}
 
-\frame{\titlepage}
+\frame[noframenumbering, plain]{\titlepage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -66,17 +82,22 @@
 \begin{frame}
 \frametitle{Who are we?}
 
-% \begin{center}
-% \includegraphics[width=1.0\textwidth]{./images_pink/sam_summary_pt_1}
-% \end{center}
+\begin{itemize}
+    \item Quantitative researchers 
+    \item Qualitative researchers 
+    \item Clinicians 
+    \item Patients and Carers Involvement (PCI) group 
+\end{itemize}
 
-\textbf{To do - tidy me} 
+\vspace{1em}
+This project, SAMueL-2, is the follow-up to SAMueL-1 with
+more data and more detail to dig into. 
 
-Some people - quant, qual, clinician(?), PCI group... 
+\vspace{1em}
+Our outputs have to be explainable to the clinicians and PCI group who are not experts in computer science. 
 
-Explainable
-
-FOSS 
+\vspace{1em}
+We like Free and Open Source Software (FOSS)! 
 
 \end{frame}
 
@@ -90,7 +111,7 @@ FOSS
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Background}
-\subsection{Treatment types} % Printed on outline slide. 
+\subsection{Stroke and treatment} % Printed on outline slide. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -99,7 +120,7 @@ FOSS
 
 \begin{frame}
 \frametitle{Two types of stroke}
-\includegraphics[width=1.0\textwidth]{./images_pink/stroke_types}
+\includegraphics[width=1.0\textwidth]{./images/stroke_types}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,7 +137,7 @@ FOSS
     \footnotesize{Thrombolysis is given as an injection followed by an infusion (\emph{drip}).}
     
     \begin{center}
-    \includegraphics[width=0.6\textwidth]{./images_pink/thrombolysis_mechanism}
+    \includegraphics[width=0.6\textwidth]{./images/thrombolysis_mechanism}
     \end{center}
     
     \column{0.5\textwidth}
@@ -126,16 +147,18 @@ FOSS
     
     \footnotesize{Thrombectomy uses a mesh device that enters the blocked blood vessel and physically removes the clot.}
     
-    \textbf{\textcolor{red}{To do - GET AN IMAGE}}
-    
     \begin{center}
-    \includegraphics[width=0.6\textwidth]{./images_pink/thrombolysis_mechanism}
+    \includegraphics[width=0.6\textwidth]{./images/thrombectomy_mesh}
     \end{center}
 
 \end{columns}
 
 \vspace{2em}
-\emph{Downsides:} not everyone is eligible for treatment, the treatments become less effective the later they are given, and there is a small chance of death. 
+\footnotesize{\emph{Downsides:} not everyone is eligible for treatment; the treatments become less effective the later they are given; and there is a small chance of death.}
+
+\vspace{1em}
+\footnotesize{SAMueL-1 focussed on thrombolysis use.} 
+
 
 \end{frame}
 
@@ -146,7 +169,7 @@ FOSS
 \frametitle{What is the problem?}
 
 \begin{center}
-\includegraphics[width=1.0\textwidth]{./images_pink/sam_summary_pt_1}
+\includegraphics[width=1.0\textwidth]{./images/sam_summary_pt_1}
 \end{center}
 
  
@@ -176,10 +199,10 @@ Thrombolysis rates in England and Wales have been stable at 11-12\% for 10 years
 
 % \vspace{-1.5em}
 
-\footnotesize 
-The single largest factor that is preventing hospitals reaching an average NHS target of 20\% thrombolysis use is clinical decision-making about which patients should receive thrombolysis.
-\normalsize
-
+% \footnotesize 
+% The single largest factor that is preventing hospitals reaching an average NHS target of 20\% thrombolysis use is clinical decision-making about which patients should receive thrombolysis.
+% \normalsize
+% 
 \smallurl{https://samuel-book.github.io/samuel-1/pathway_sim/explained_variance_in_thrombolysis.html}
 
 \smallurl{https://samuel-book.github.io/samuel-1/introduction/scientific_summary.html}
@@ -207,14 +230,20 @@ What causes this variation in thrombolysis rates, and what could reasonably be a
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{SAMueL quantitative overview and results so far} 
 
 \begin{frame}
 \frametitle{Breaking down the emergency stroke pathway into key steps}
+
+
+% \vspace{2em}
+We accessed 240,000 emergency stroke admissions in England and Wales over three years. %That is a lot of examples to learn from!
+
 \begin{center}
 \includegraphics[width=1.0\textwidth]{./images/pathway}
 \end{center}
 
-\textbf{To do - all this space looks accidental} 
+The effect of time from onset to treatment will be covered later with the \emph{stroke outcome modelling}.
 
 \end{frame}
 
@@ -246,8 +275,6 @@ What causes this variation in thrombolysis rates, and what could reasonably be a
 % Machine learning (and nearly all \emph{artificial intelligence}) is based on the simple principle of recognising similarity to what has been seen before.
 % \vspace{3mm}
 
-\vspace{2em}
-We accessed 240,000 emergency stroke admissions in England and Wales over three years. %That is a lot of examples to learn from!
 
 \end{frame}
 
@@ -258,17 +285,17 @@ We accessed 240,000 emergency stroke admissions in England and Wales over three 
 
 
 \begin{frame}
-\frametitle{Questions from SAMueL-1}
+\frametitle{"What if?" questions from SAMueL-1}
 
-\footnotesize{We 
-% used clinical pathway simulation and machine learning to 
-analysed a series of \emph{what if?} questions:}
+% \footnotesize{We 
+% % used clinical pathway simulation and machine learning to 
+% analysed a series of \emph{what if?} questions:}
 
 \begin{itemize}
     \footnotesize
     % \setlength\itemsep{3mm}
     \item What if arrival-to-treatment time was 30 minutes?
-    \item What if all hospitals determined stroke onset time as frequently as an \emph{upper quartile} hospital (a hospital ranked 25 out of 100, for determining stroke onset time).
+    \item What if all hospitals determined stroke onset time as frequently as an \emph{upper quartile} hospital (ranked 25 out of 100 for determining stroke onset time).
     \item What if decisions to thrombolyse were made according to a majority vote of 30 benchmark hospitals?
 \end{itemize}
 
@@ -285,7 +312,7 @@ analysed a series of \emph{what if?} questions:}
 % \begin{frame}
 % \frametitle{Results so far from SAMueL-1}
 \begin{center}
-\includegraphics[width=1.0\textwidth]{./images_pink/sam_summary_pt_3}
+\includegraphics[width=1.0\textwidth]{./images/sam_summary_pt_3}
 \end{center}
 
 \end{frame}
@@ -311,7 +338,7 @@ analysed a series of \emph{what if?} questions:}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Explainability of neural networks with SHAP}
+\section{Explainability of machine learning}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -321,7 +348,7 @@ analysed a series of \emph{what if?} questions:}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\subsection{Simplify the model} 
 \begin{frame}
 \frametitle{Simplifying the model with feature selection}
 
@@ -393,25 +420,27 @@ analysed a series of \emph{what if?} questions:}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{SHAP} 
+
+
+
 \begin{frame}
-\frametitle{Shapley (SHAP) values}
+\frametitle{SHAP output for an individual patient}
 
-{\footnotesize
-SHAP values report how individual patient features affect the model prediction. 
-\vspace{0.5em}
-
-SHAP values are usually reported as log odds shift in odds. That is not very intuitive! 
-But let’s look at an example of how that feeds into probabilities.
-} 
+\footnotesize{SHAP values show the influence of features (even for \emph{`black box'} models).}
 
 \begin{center} 
-\includegraphics[width=0.7\textwidth]{./images/SHAP_values_table}
-\end{center} 
+\includegraphics[width=0.7\textwidth]{./images/shap_output_for_individual_patient}
+\end{center}
+
+% \vspace{-0.8em}
 
 {\tiny For more on odds, probabilities and SHAP see: }
 \smallurl{https://samuel-book.github.io/samuel_shap_paper_1/introduction/odds_prob.html}
 
+
 \end{frame}
+
 
 
 
@@ -421,6 +450,10 @@ But let’s look at an example of how that feeds into probabilities.
 \begin{frame}
 \frametitle{How do different SHAP values affect a starting probability of 25\%?}
 
+
+SHAP values are usually reported as log odds shift in odds. That is not very intuitive! 
+
+\vspace{0.5em}
 Let’s build more intuition on the effect of different magnitudes of SHAP.
 
 \begin{center}
@@ -430,22 +463,6 @@ Let’s build more intuition on the effect of different magnitudes of SHAP.
 \end{frame}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{SHAP output for an individual patient}
-
-
-SHAP values show the influence of features (even for \emph{`black box'} models).
-
-\begin{center} 
-\includegraphics[width=0.8\textwidth]{./images/shap_output_for_individual_patient}
-\end{center}
-
-\vspace{-0.8em}
-\tiny{Note: SHAP values here are \emph{log odds}. Each step-change in value of \textpm 1 changes the chances of receiving thrombolysis about 3-fold. (Plots are in order of feature importance.)}
-
-\end{frame}
 
 
 
@@ -462,7 +479,10 @@ SHAP values show the influence of features (even for \emph{`black box'} models).
     \includegraphics[width=0.75\textwidth]{./images/shap_violins}
 \end{center}
 
-\vspace{-1em}
+% \vspace{-1em}
+
+\tiny{Note: SHAP values here are \emph{log odds}. Each step-change in value of \textpm 1 changes the chances of receiving thrombolysis about 3-fold. (Plots are in order of feature importance.)}
+
 
 \smallurl{https://samuel-book.github.io/samuel_shap_paper_1/xgb_with_feature_selection/03_xgb_combined_shap_key_features.html}
 
@@ -474,12 +494,14 @@ SHAP values show the influence of features (even for \emph{`black box'} models).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Example: Which patients' treatments do clinicians disagree on?} 
 
 \begin{frame}
 \frametitle{10k cohort thrombolysis, and benchmark hospitals}
 % \includegraphics[width=1.0\textwidth]{./images/}
 
 \begin{itemize}
+  \footnotesize
   \item Separate out 10k patients 
   \item Train model on remaining data (78,792 patients)
   \item Pass 10k cohort through model, changing hospital coding each time to mimic same patients going to each of 132 hospitals
@@ -487,76 +509,27 @@ SHAP values show the influence of features (even for \emph{`black box'} models).
     \item All other patient and pathway data the same each time
   \end{itemize} 
   \item Model then predicts the thrombolysis rate across hospitals if they all saw the same patients
-  \item Top 30 thrombolysing hospitals are taken as ‘benchmark’
-hospital
-  \begin{itemize} 
-    \item A ‘benchmark decision’ on any patient may be made by taking the majority vote of the benchmark hospitals
-  \end{itemize} 
+%   \item Top 30 thrombolysing hospitals are taken as ‘benchmark’
+% hospital
+%   \begin{itemize} 
+%     \item A ‘benchmark decision’ on any patient may be made by taking the majority vote of the benchmark hospitals
+%   \end{itemize} 
 \end{itemize}
 
-
-{\tiny
-Note: Here we are looking at the predicted use of thrombolysis in patients who arrive within 4 hours of
-known stroke onset (this is about 40\% of all emergency stroke admissions).}
-
-
-\end{frame}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{Average SHAP values for each hospital}
-
-Average SHAP values for each hospital range from -1.3 to +1.3.
-
-\begin{columns}
-    \column{0.57\textwidth}
+\begin{columns} 
+    \column{0.6\textwidth}
     \begin{center} 
-    \includegraphics[width=\textwidth]{./images/shap_average_per_hospital_annotated}
-    \end{center}
-
-
-    \column{0.43\textwidth}
-    \vspace{0.5em}
-    \begin{center} 
-    \includegraphics[width=\textwidth, trim={0em 0em 0em 4em}, clip]{./images/predicted_thrombolysis_use}
+    \includegraphics[width=0.75\textwidth, trim={0em 0em 0em 4em}, clip]{./images/predicted_thrombolysis_use}
     \end{center} 
-
-\end{columns} 
-
-
-
-\smallurl{https://samuel-book.github.io/samuel_shap_paper_1/xgb_with_feature_selection/03_xgb_combined_shap_key_features.html}
-
-\smallurl{https://samuel-book.github.io/samuel_shap_paper_1/xgb_with_feature_selection/04_compare_10k_cohort_key_features.html}
-
-
-\end{frame}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{How does the predicted 10k thrombolysis use compare with the SHAP values learned for each hospital?}
-
-\begin{columns}
-    \column{0.8\textwidth}
-    \begin{center} 
-    \includegraphics[width=0.98\textwidth]{./images/rsquared_shap_predicted_thrombolysis}
-    \end{center} 
-    
-    \column{0.2\textwidth}
-    
-    {\footnotesize
-    86\% of the variance in predicted
-    10k thrombolysis use can be
-    explained by the learned hospital
-    SHAP.}
+        
+    \column{0.4\textwidth}
+    {\tiny
+    Note: Here we are looking at the predicted use of thrombolysis in patients who arrive within 4 hours of
+    known stroke onset (this is about 40\% of all emergency stroke admissions).}
 \end{columns}
 
-
 \end{frame}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -568,22 +541,22 @@ Average SHAP values for each hospital range from -1.3 to +1.3.
 
 \begin{itemize}
   \footnotesize
-  \item Low thrombolysing hospitals = lowest predicted 10k thrombolysis use
-  \item  High thrombolysing hospitals = highest predicted 10k thrombolysis use
+  \item Low-thrombolysing hospitals = lowest predicted 10k thrombolysis use
+  \item High-thrombolysing hospitals = highest predicted 10k thrombolysis use
 \end{itemize} 
 
 \vspace{1.5em}
 
-\textcolor{SkyBlue}{\textbf{Motivation:} ``What patients do low thrombolysing hospitals not thrombolyse, when high thrombolysing hospitals would?''} 
+\textcolor{SkyBlue}{\textbf{Motivation:} ``What patients do low-thrombolysing hospitals not thrombolyse, when high-thrombolysing hospitals would?''} 
 
 \vspace{1.5em}
 
 Model:
 \begin{itemize}
   \footnotesize
-  \item Get data for all patients attending low thrombolysing hospitals
-  \item Find those patients who would be given thrombolysis by a majority of the high thrombolysing hospitals
-  \item Train a model to predict which of those patients would be treated differently at the lower low thrombolysing hospitals (i.e. would not receive thrombolysis)
+  \item Get data for all patients attending low-thrombolysing hospitals
+  \item Find those patients who would be given thrombolysis by a majority of the high-thrombolysing hospitals
+  \item Train a model to predict which of those patients would be treated differently at the low-thrombolysing hospitals (i.e. would not receive thrombolysis)
 \end{itemize}
 
 \end{frame}
@@ -657,52 +630,6 @@ We find that low thrombolysing hospitals are less likely to give thrombolysis to
 
 These are the same patterns as we see in general thrombolysis decision-making,
 but low thrombolysing hospitals appear more sensitive to these features.
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{SHAP Summary}
-
-\begin{columns}
-    \column{0.5\textwidth}
-    \begin{itemize}
-      \footnotesize 
-      \item Thrombolysis rates vary considerably (5--25\%)
-      \item An XGBoost model with 8 features has 85\% accuracy at predicting use of thrombolysis
-      \item Shapley (or SHAP) values show how much each feature influences the model prediction
-      \item The probability of receiving thrombolysis is increased with:
-      \begin{itemize}
-        \tiny 
-        \item Ischaemic stroke
-        \item Short arrival to scan time
-        \item Stroke severity 6-35
-        \item Precisely known onset time
-        \item Low prior disability
-        \item No use of anticoagulants for AF
-        \item Short onset-to-arrival times
-        \item Attending hospitals with high propensity to use thrombolysis
-      \end{itemize}
-    \end{itemize}
-
-    \column{0.5\textwidth} 
-    \begin{itemize}
-      \footnotesize 
-      \item Predicted thrombolysis use in a 10k patient cohort set correlates very well with hospital SHAP values
-      \item Applying thrombolysis benchmark decisions would increase thrombolysis use 22\% overall, and 67\% in the 30 hospitals with the lowest propensity to use thrombolysis.
-      \item We find that low thrombolysing hospitals are less likely to give thrombolysis to patients with:
-      \begin{itemize}
-        \tiny 
-        \item Low or very high stroke severity
-        \item An estimated (not precise) stroke onset time
-        \item Prior disability
-        \item A longer arrival-to-scan time
-        \item A longer onset-to-arrival time
-        \item Use of of AF anticoagulants
-      \end{itemize}
-    \end{itemize}
-\end{columns}
 
 \end{frame}
 
@@ -821,7 +748,7 @@ The variation with time is a logistic function.
 \phantom{If treated at time 3h30min, Patient X will see an improvement in mRS score of 1 c.}
 
 \vspace{1em}
-\smallurl{http://localhost:8888/lab/tree/stroke_outcome/mRS_outcomes_maths.ipynb}
+\smallurl{https://github.com/samuel-book/stroke_outcome/blob/main/mRS_outcomes_maths.ipynb}
 
 \end{frame}
 
@@ -842,7 +769,7 @@ Expected outcomes of patients with large-vessel occlusions treated with thrombec
 If treated at time 3h30min, Patient X will see an improvement in mRS score of 1 compared with receiving no treatment. 
 
 \vspace{1em}
-\smallurl{http://localhost:8888/lab/tree/stroke_outcome/mRS_outcomes_maths.ipynb}
+\smallurl{https://github.com/samuel-book/stroke_outcome/blob/main/mRS_outcomes_maths.ipynb}
 
 
 \end{frame}
@@ -866,33 +793,84 @@ If treated at time 3h30min, Patient X will see an improvement in mRS score of 1 
 \begin{frame}
 \frametitle{Streamlit app}
 
-\textbf{To do - finish this slide} 
 
-Streamlit app: ADD LINK HERE 
+Available here: \textcolor{blue}{\url{https://samuel2-stroke-outcome.streamlit.app/}}
 
+\vspace{0.5em}
+
+\begin{center} 
+\includegraphics[width=0.8\textwidth]{./images/Streamlit_pathway}
+\end{center} 
+  
+\vspace{1em}
+
+\tiny{The app is linked to this (messy!) GitHub repository:}
+\smallurl{https://github.com/aselaws/stroke_outcome_app}
+
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Summary}
 
 \begin{columns}
     \column{0.5\textwidth}
-    GitHub repository: 
-    \begin{center} 
-    \includegraphics[width=0.5\textwidth]{./images/GitHub-streamlit}
-    \end{center} 
-  
-    \column{0.5\textwidth}
-    Streamlit app:
-    \begin{center} 
-    \includegraphics[width=0.5\textwidth]{./images/Streamlit-screenshot}
-    \end{center} 
-    (placeholder - get day mode) 
-\end{columns}
+    \emph{SHAP:}
+    \begin{itemize}
+      \footnotesize 
+    %   \item Thrombolysis rates vary considerably (5--25\%)
+      \item An XGBoost model with 8 features has 85\% accuracy at predicting use of thrombolysis
+      \item Shapley (or SHAP) values show how much each feature influences the model prediction
+      \item The probability of receiving thrombolysis is increased with:
+      \begin{itemize}
+        \tiny 
+        \item Ischaemic stroke
+        \item Short arrival to scan time
+        \item Stroke severity 6-35
+        \item Precisely known onset time
+        \item Low prior disability
+        \item No use of anticoagulants for AF
+        \item Short onset-to-arrival times
+        \item Attending hospitals with high propensity to use thrombolysis
+      \end{itemize}
+    \end{itemize}
 
-Linked to this (messy!) GitHub repository: \smallurl{https://github.com/aselaws/stroke_outcome_app}
+    \begin{itemize}
+      \footnotesize 
+    %   \item Predicted thrombolysis use in a 10k patient cohort set correlates very well with hospital SHAP values
+    %   \item Applying thrombolysis benchmark decisions would increase thrombolysis use 22\% overall, and 67\% in the 30 hospitals with the lowest propensity to use thrombolysis.
+      \item We find that low-thrombolysing hospitals are 
+      more sensitive to these features.
+    %   less likely to give thrombolysis to patients with:
+    %   \begin{itemize}
+    %     \tiny 
+    %     \item Low or very high stroke severity
+    %     \item An estimated (not precise) stroke onset time
+    %     \item Prior disability
+    %     \item A longer arrival-to-scan time
+    %     \item A longer onset-to-arrival time
+    %     \item Use of of AF anticoagulants
+    %   \end{itemize}
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \emph{Stroke outcome modelling:}
+    \begin{itemize}
+        \footnotesize
+        \item Many data sources have been combined to create modified Rankin scale (mRS) distributions as a function of time
+        \item These can be used to find the expected changes in mRS and utility of a patient population
+        \item An application of this is comparing the population outcomes depending on choice of hospital 
+    \end{itemize}
+\end{columns}
 
 \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Thank you!!}
+\begin{frame}[noframenumbering,plain]{Thank you!!}
     Thank you for your time and attention!
 \end{frame}
 
@@ -901,14 +879,36 @@ Linked to this (messy!) GitHub repository: \smallurl{https://github.com/aselaws/
 
 % EXTRA SLIDE(S)
 
-\begin{frame}[noframenumbering]{Reserve slides}
+\begin{frame}[noframenumbering, plain]{Reserve slides}
     
 \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[noframenumbering]
+\begin{frame}[noframenumbering, plain]
+\frametitle{Shapley (SHAP) values}
+
+{\footnotesize
+SHAP values report how individual patient features affect the model prediction. 
+\vspace{0.5em}
+
+SHAP values are usually reported as log odds shift in odds. That is not very intuitive! 
+But let’s look at an example of how that feeds into probabilities.
+} 
+
+\begin{center} 
+\includegraphics[width=0.7\textwidth]{./images/SHAP_values_table}
+\end{center} 
+
+{\tiny For more on odds, probabilities and SHAP see: }
+\smallurl{https://samuel-book.github.io/samuel_shap_paper_1/introduction/odds_prob.html}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[noframenumbering, plain]
 \frametitle{Applying our models at hospital level}
 
 \begin{center}
@@ -920,7 +920,66 @@ Linked to this (messy!) GitHub repository: \smallurl{https://github.com/aselaws/
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[noframenumbering]
+\begin{frame}[noframenumbering, plain]
+\frametitle{Average SHAP values for each hospital}
+
+
+\begin{columns}
+
+    \column{0.43\textwidth}
+    \vspace{0.5em}
+    \begin{center} 
+    \includegraphics[width=\textwidth, trim={0em 0em 0em 4em}, clip]{./images/predicted_thrombolysis_use}
+    \end{center} 
+    
+    \column{0.57\textwidth}
+    \begin{center} 
+    \includegraphics[width=\textwidth]{./images/shap_average_per_hospital_annotated}
+    \end{center}
+
+
+\end{columns} 
+
+Average SHAP values for each hospital range from -1.3 to +1.3.
+
+\vspace{1em}
+\footnotesize{Note: these SHAP values were produced using the full cohort of patients, not just the 10K subset.}
+
+\smallurl{https://samuel-book.github.io/samuel_shap_paper_1/xgb_with_feature_selection/03_xgb_combined_shap_key_features.html}
+
+\smallurl{https://samuel-book.github.io/samuel_shap_paper_1/xgb_with_feature_selection/04_compare_10k_cohort_key_features.html}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[noframenumbering, plain]
+\frametitle{How does the predicted 10k thrombolysis use compare with the SHAP values learned for each hospital?}
+
+\begin{columns}
+    \column{0.8\textwidth}
+    \begin{center} 
+    \includegraphics[width=0.98\textwidth]{./images/rsquared_shap_predicted_thrombolysis}
+    \end{center} 
+    
+    \column{0.2\textwidth}
+    
+    {\footnotesize
+    86\% of the variance in predicted
+    10k thrombolysis use can be
+    explained by the learned hospital
+    SHAP.}
+\end{columns}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[noframenumbering, plain]
 \frametitle{mRS variation with time}
 
 \begin{center} 
@@ -928,7 +987,7 @@ Linked to this (messy!) GitHub repository: \smallurl{https://github.com/aselaws/
 \end{center} 
 
 \vspace{1em}
-\smallurl{http://localhost:8888/lab/tree/stroke_outcome/mRS_outcomes_maths.ipynb}
+\smallurl{https://github.com/samuel-book/stroke_outcome/blob/main/mRS_outcomes_maths.ipynb}
 
 \end{frame}
 
@@ -936,7 +995,7 @@ Linked to this (messy!) GitHub repository: \smallurl{https://github.com/aselaws/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\begin{frame}[noframenumbering]
+\begin{frame}[noframenumbering, plain]
 \frametitle{Variation with time for different stroke types and treatment types.}
 
 \begin{columns}
@@ -948,7 +1007,7 @@ Linked to this (messy!) GitHub repository: \smallurl{https://github.com/aselaws/
     \end{center} 
     %
     \vspace{1em}
-    \smallurl{http://localhost:8888/lab/tree/stroke_outcome/mRS_outcomes_maths.ipynb}
+    \smallurl{https://github.com/samuel-book/stroke_outcome/blob/main/mRS_outcomes_maths.ipynb}
 
     \column{0.5\textwidth}
     LVO treated with IVT
@@ -972,7 +1031,7 @@ Linked to this (messy!) GitHub repository: \smallurl{https://github.com/aselaws/
 
 
 
-\begin{frame}[noframenumbering]
+\begin{frame}[noframenumbering, plain]
 \frametitle{Basic geography with stroke outcome modelling}
 
 \footnotesize{What difference does it make if everyone in the patient population:}
